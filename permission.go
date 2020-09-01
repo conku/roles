@@ -19,6 +19,14 @@ const (
 	Delete PermissionMode = "delete"
 	// CRUD predefined permission mode, create+read+update+delete permission
 	CRUD PermissionMode = "crud"
+	// RU predefined permission mode,read+update permission
+	RU PermissionMode = "ru"
+	// CR predefined permission mode, create+read permission
+	CR PermissionMode = "cr"
+	// CRU predefined permission mode, create+read+update permission
+	CRU PermissionMode = "cru"
+	// RUD predefined permission mode,read+update permission
+	RUD PermissionMode = "rud"
 )
 
 // ErrPermissionDenied no permission error
@@ -90,6 +98,18 @@ func (permission *Permission) Allow(mode PermissionMode, roles ...string) *Permi
 func (permission *Permission) Deny(mode PermissionMode, roles ...string) *Permission {
 	if mode == CRUD {
 		return permission.Deny(Create, roles...).Deny(Update, roles...).Deny(Read, roles...).Deny(Delete, roles...)
+	}
+
+	if mode == CR {
+		return permission.Deny(Create, roles...).Deny(Read, roles...)
+	}
+
+	if mode == RU {
+		return permission.Deny(Create, roles...).Allow(Update, roles...)
+	}
+
+	if mode == CRU {
+		return permission.Deny(Create, roles...).Deny(Read, roles...).Deny(Update, roles...)
 	}
 
 	if permission.DeniedRoles[mode] == nil {
