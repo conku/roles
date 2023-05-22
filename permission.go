@@ -87,6 +87,18 @@ func (permission *Permission) Allow(mode PermissionMode, roles ...string) *Permi
 		return permission.Allow(Create, roles...).Allow(Update, roles...).Allow(Read, roles...).Allow(Delete, roles...)
 	}
 
+	if mode == CR {
+		return permission.Allow(Create, roles...).Allow(Read, roles...)
+	}
+
+	if mode == RU {
+		return permission.Allow(Create, roles...).Allow(Update, roles...)
+	}
+
+	if mode == CRU {
+		return permission.Allow(Create, roles...).Allow(Read, roles...).Allow(Update, roles...)
+	}
+
 	if permission.AllowedRoles[mode] == nil {
 		permission.AllowedRoles[mode] = []string{}
 	}
